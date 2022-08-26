@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">BarcodeViewerAndroid</string>
+    <string name="btnEan">View</string>
+    <string name="hintInput">EAN</string>
+</resources>
