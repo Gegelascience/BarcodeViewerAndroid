@@ -2,6 +2,7 @@ package com.remiverchere.barcodeviewerandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button eanBtn = findViewById(R.id.buttonEan);
         EditText eanInput = findViewById(R.id.editTextEan);
-        BarcodeView myBarcodeView = findViewById(R.id.barcodeRendering);
+
         eanBtn.setOnClickListener(v -> {
 
             //memo valeurs de tests 3666154117284  12345670
@@ -29,7 +30,10 @@ public class MainActivity extends AppCompatActivity {
             EanValidator validator = new EanValidator(EanEnum.EAN13);
             Log.d("test", String.valueOf(validator.isCorrectEan(eanPossibleValue)));
             if (validator.isCorrectEan(eanPossibleValue)){
-                myBarcodeView.modifyEanToRender(eanPossibleValue,EanEnum.EAN13 );
+                Intent goBarcodeActivity = new Intent(MainActivity.this, BarcodeActivity.class);
+                goBarcodeActivity.putExtra("ean",eanPossibleValue);
+                startActivity(goBarcodeActivity);
+
             }
 
 
