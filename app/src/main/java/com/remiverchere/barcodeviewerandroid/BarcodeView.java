@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.remiverchere.barcodeviewerandroid.testean.EanEnum;
 
@@ -43,16 +44,17 @@ public class BarcodeView extends View {
 
         if (this.ean != null){
             String dataToRender = getBarcodeValue();
+            Log.d("test value", dataToRender);
 
-            myPaint.setColor(getResources().getColor(R.color.black));
-            myPaint.setStrokeWidth(30.0f);
+            myPaint.setColor(ContextCompat.getColor(this.getContext(),R.color.black));
+            myPaint.setStrokeWidth(20.0f);
 
             int decalageLargeur = 100;
 
             if (dataToRender != null){
                 for (int i = 0; i < dataToRender.length(); i++) {
                     if ( dataToRender.charAt(i) == '1'){
-                        canvas.drawLine(400,decalageLargeur + i*30,550,decalageLargeur + i*30,myPaint);
+                        canvas.drawLine(decalageLargeur + i*20,400,decalageLargeur + i*20,550,myPaint);
                     }
 
                 }
@@ -90,7 +92,7 @@ public class BarcodeView extends View {
             barcodeValue = barcodeValue +"01010";
 
             for (int i = 0; i < seconPart.length(); i++) {
-                barcodeValue = barcodeValue + setC.get(Integer.parseInt(firstPart.substring(i,i+1)));
+                barcodeValue = barcodeValue + setC.get(Integer.parseInt(seconPart.substring(i,i+1)));
             }
 
 
@@ -112,7 +114,7 @@ public class BarcodeView extends View {
             barcodeValue = barcodeValue +"01010";
 
             for (int i = 0; i < seconPart.length(); i++) {
-                barcodeValue = barcodeValue + setC.get(Integer.parseInt(firstPart.substring(i,i+1)));
+                barcodeValue = barcodeValue + setC.get(Integer.parseInt(seconPart.substring(i,i+1)));
             }
 
 
