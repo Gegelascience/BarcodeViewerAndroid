@@ -46,15 +46,26 @@ public class BarcodeView extends View {
             String dataToRender = getBarcodeValue();
             Log.d("test value", dataToRender);
 
-            myPaint.setColor(ContextCompat.getColor(this.getContext(),R.color.black));
-            myPaint.setStrokeWidth(20.0f);
+            float barWidth = 20.0f;
 
-            int decalageLargeur = 100;
+            myPaint.setColor(ContextCompat.getColor(this.getContext(),R.color.black));
+            myPaint.setStrokeWidth(barWidth);
+
+            float widthView = this.getWidth();
+
+            int decalageLargeur;
+            if (this.eanType == EanEnum.EAN13) {
+                decalageLargeur = Math.round((widthView - (7*12 +11)*barWidth)/2);
+
+            } else {
+                decalageLargeur = Math.round((widthView - (7*8 +11)*barWidth)/2);
+            }
+            Log.d("test len", ""+decalageLargeur);
 
             if (dataToRender != null){
                 for (int i = 0; i < dataToRender.length(); i++) {
                     if ( dataToRender.charAt(i) == '1'){
-                        canvas.drawLine(decalageLargeur + i*20,400,decalageLargeur + i*20,550,myPaint);
+                        canvas.drawLine(decalageLargeur + i*barWidth,400,decalageLargeur + i*20,550,myPaint);
                     }
 
                 }
@@ -80,47 +91,47 @@ public class BarcodeView extends View {
 
             String prefix = this.ean.substring(0,1);
 
-            String barcodeValue = "101";
+            StringBuilder barcodeValue = new StringBuilder("101");
 
             for (int i = 0; i < firstPart.length(); i++) {
                 List<String> setFound = this.getSetToApply(i,prefix);
 
-                barcodeValue = barcodeValue + setFound.get(Integer.parseInt(firstPart.substring(i,i+1)));
+                barcodeValue.append(setFound.get(Integer.parseInt(firstPart.substring(i, i + 1))));
             }
 
 
-            barcodeValue = barcodeValue +"01010";
+            barcodeValue.append("01010");
 
             for (int i = 0; i < seconPart.length(); i++) {
-                barcodeValue = barcodeValue + setC.get(Integer.parseInt(seconPart.substring(i,i+1)));
+                barcodeValue.append(setC.get(Integer.parseInt(seconPart.substring(i, i + 1))));
             }
 
 
-            barcodeValue = barcodeValue +"101";
+            barcodeValue.append("101");
 
-            return barcodeValue;
+            return barcodeValue.toString();
 
         } else if (this.eanType == EanEnum.EAN8) {
 
             String firstPart = this.ean.substring(0,4);
             String seconPart = this.ean.substring(4);
 
-            String barcodeValue = "101";
+            StringBuilder barcodeValue = new StringBuilder("101");
 
             for (int i = 0; i < seconPart.length(); i++) {
-                barcodeValue = barcodeValue + setA.get(Integer.parseInt(firstPart.substring(i,i+1)));
+                barcodeValue.append(setA.get(Integer.parseInt(firstPart.substring(i, i + 1))));
             }
 
-            barcodeValue = barcodeValue +"01010";
+            barcodeValue.append("01010");
 
             for (int i = 0; i < seconPart.length(); i++) {
-                barcodeValue = barcodeValue + setC.get(Integer.parseInt(seconPart.substring(i,i+1)));
+                barcodeValue.append(setC.get(Integer.parseInt(seconPart.substring(i, i + 1))));
             }
 
 
-            barcodeValue = barcodeValue +"101";
+            barcodeValue.append("101");
 
-            return barcodeValue;
+            return barcodeValue.toString();
         } else {
             return null;
         }

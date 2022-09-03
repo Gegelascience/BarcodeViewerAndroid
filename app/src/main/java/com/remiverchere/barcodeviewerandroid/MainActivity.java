@@ -27,13 +27,20 @@ public class MainActivity extends AppCompatActivity {
 
             String eanPossibleValue = eanInput.getText().toString();
             Log.d("test",eanPossibleValue);
-            EanValidator validator = new EanValidator(EanEnum.EAN13);
-            Log.d("test", String.valueOf(validator.isCorrectEan(eanPossibleValue)));
-            if (validator.isCorrectEan(eanPossibleValue)){
+            EanValidator validator13 = new EanValidator(EanEnum.EAN13);
+            EanValidator validator8 = new EanValidator(EanEnum.EAN8);
+            Log.d("test", String.valueOf(validator13.isCorrectEan(eanPossibleValue)));
+            if (validator13.isCorrectEan(eanPossibleValue)){
                 Intent goBarcodeActivity = new Intent(MainActivity.this, BarcodeActivity.class);
                 goBarcodeActivity.putExtra("ean",eanPossibleValue);
+                goBarcodeActivity.putExtra("eanType",EanEnum.EAN13);
                 startActivity(goBarcodeActivity);
 
+            } else if (validator8.isCorrectEan(eanPossibleValue)) {
+                Intent goBarcodeActivity = new Intent(MainActivity.this, BarcodeActivity.class);
+                goBarcodeActivity.putExtra("ean",eanPossibleValue);
+                goBarcodeActivity.putExtra("eanType",EanEnum.EAN8);
+                startActivity(goBarcodeActivity);
             }
 
 

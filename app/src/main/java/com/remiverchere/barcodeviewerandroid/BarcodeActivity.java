@@ -18,7 +18,8 @@ public class BarcodeActivity extends AppCompatActivity {
 
         if (extras != null) {
             String eanPossibleValue = extras.getString("ean");
-            myBarcodeView.modifyEanToRender(eanPossibleValue, EanEnum.EAN13 );
+            EanEnum eanType = (EanEnum)extras.get("eanType");
+            myBarcodeView.modifyEanToRender(eanPossibleValue, eanType );
         }
 
     }
