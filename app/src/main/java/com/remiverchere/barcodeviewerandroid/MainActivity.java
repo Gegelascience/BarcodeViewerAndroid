@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
+import android.util.Xml;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -25,9 +26,12 @@ import android.widget.Toast;
 import com.remiverchere.barcodeviewerandroid.checkEan.EanEnum;
 import com.remiverchere.barcodeviewerandroid.checkEan.EanValidator;
 
+import org.xmlpull.v1.XmlSerializer;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -95,12 +99,42 @@ public class MainActivity extends AppCompatActivity {
 
     private void writeSvgFile() {
         try {
-            File xmlFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),"testFile.txt");
+            File xmlFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),"testFile.xml");
             if (xmlFile.exists()){
                 boolean isDeleted = xmlFile.delete();
             }
-            FileOutputStream fos = new FileOutputStream(xmlFile,true);
-            fos.write("test2".getBytes());
+            FileOutputStream fos = new FileOutputStream(xmlFile);
+            XmlSerializer xmlSerializer = Xml.newSerializer();
+            StringWriter writer = new StringWriter();
+            xmlSerializer.setOutput(writer);
+            xmlSerializer.startDocument("UTF-8",true);
+            xmlSerializer.startTag(null,"svg");
+            xmlSerializer.attribute(null, "xmlns","http://www.w3.org/2000/svg");
+            xmlSerializer.attribute(null, "version","1.1");
+            xmlSerializer.attribute(null, "baseProfile","full");
+            xmlSerializer.attribute(null, "width","700");
+            xmlSerializer.attribute(null, "height","200");
+
+            xmlSerializer.startTag(null,"g");
+            xmlSerializer.attribute(null, "stroke","black");
+
+            xmlSerializer.startTag(null,"line");
+            xmlSerializer.attribute(null, "stroke-width","4");
+            xmlSerializer.attribute(null, "y1","10");
+            xmlSerializer.attribute(null, "x1","10");
+            xmlSerializer.attribute(null, "y2","50");
+            xmlSerializer.attribute(null, "x2","10");
+
+            xmlSerializer.endTag(null,"line");
+
+            xmlSerializer.endTag(null,"g");
+            xmlSerializer.endTag(null,"svg");
+
+            xmlSerializer.endDocument();
+            xmlSerializer.flush();
+
+            String dataWrite = writer.toString();
+            fos.write(dataWrite.getBytes());
             fos.close();
         } catch (IOException e) {
             e.printStackTrace();
