@@ -1,6 +1,4 @@
-package com.remiverchere.barcodeviewerandroid.testean;
-
-import android.util.Log;
+package com.remiverchere.barcodeviewerandroid.checkEan;
 
 import androidx.annotation.NonNull;
 
@@ -31,11 +29,7 @@ public class EanValidator {
 
             String correctCheckDigit = this.calculateCheckDigit(eanWithoutCheckDigit);
 
-            if (!correctCheckDigit.equals(possibleCheckDigit)){
-                return false;
-            }
-
-            return true;
+            return correctCheckDigit.equals(possibleCheckDigit);
         } catch (Exception ex) {
             return false;
         }

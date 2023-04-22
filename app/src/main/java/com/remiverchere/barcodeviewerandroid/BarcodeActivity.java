@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.remiverchere.barcodeviewerandroid.testean.EanEnum;
+import com.remiverchere.barcodeviewerandroid.checkEan.EanEnum;
 
 public class BarcodeActivity extends AppCompatActivity {
 

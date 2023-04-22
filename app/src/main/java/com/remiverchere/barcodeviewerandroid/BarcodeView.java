@@ -10,10 +10,9 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import com.remiverchere.barcodeviewerandroid.testean.EanEnum;
+import com.remiverchere.barcodeviewerandroid.checkEan.EanEnum;
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -87,14 +86,14 @@ public class BarcodeView extends View {
                     if (i > 2 && i < this.listMetaIndex.get(3)){
                         int iref = i - 2;
                         if (iref%7 == 3) {
-                            int textValue= (int) Math.floor(iref/7);
+                            int textValue= (int) Math.floor(iref/7.0f);
                             canvas.drawText(this.ean.substring(textValue + decalagepart1,textValue + decalagepart1 +1),decalageLargeur + i*barWidth,650,myPaint);
                         }
                     } else {
                         if (i > this.listMetaIndex.get(7) && i < this.listMetaIndex.get(8)) {
                             int iref = i - this.listMetaIndex.get(7);
                             if (iref%7 == 3) {
-                                int textValue= (int) Math.floor(iref/7);
+                                int textValue= (int) Math.floor(iref/7.0f);
                                 canvas.drawText(this.ean.substring(textValue + decalagepart2,textValue + decalagepart2 +1),decalageLargeur + i*barWidth,650,myPaint);
                             }
                         }
