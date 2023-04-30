@@ -10,33 +10,24 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
-import android.util.Xml;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.remiverchere.barcodeviewerandroid.barcodeUtils.BarcodeFileSaving;
-import com.remiverchere.barcodeviewerandroid.barcodeUtils.BarcodeFormatter;
 import com.remiverchere.barcodeviewerandroid.checkEan.EanEnum;
 
-import org.xmlpull.v1.XmlSerializer;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.StringWriter;
 
 public class BarcodeActivity extends AppCompatActivity {
     boolean canWriteFile = true;
     private static final int STORAGE_PERMISSION_CODE = 100;
     String possibleEan;
-    EanEnum eantype;
+    EanEnum eanType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,20 +39,20 @@ public class BarcodeActivity extends AppCompatActivity {
 
         if (extras != null) {
             this.possibleEan = extras.getString("ean");
-            this.eantype = (EanEnum)extras.get("eanType");
-            myBarcodeView.modifyEanToRender(this.possibleEan, this.eantype );
+            this.eanType = (EanEnum)extras.get("eanType");
+            myBarcodeView.modifyEanToRender(this.possibleEan, this.eanType );
 
             Button svgBtn = findViewById(R.id.saveSvg);
             svgBtn.setOnClickListener( v -> {
                 if (isExternalStorageDisabled() || isExternalStorageReadOnly()) {
                     canWriteFile = false;
-                    Log.w("test", String.valueOf(canWriteFile));
+                    Log.w("test", String.valueOf(false));
                 }
                 if (canWriteFile){
                     if (checkPermission()) {
                         Log.d("test", "onClick: Permissions already granted...");
                         BarcodeFileSaving myFileSaving = new BarcodeFileSaving();
-                        myFileSaving.saveAsSvgFile(this.eantype, this.possibleEan);
+                        myFileSaving.saveAsSvgFile(this.eanType, this.possibleEan);
                     } else {
                         Log.d("test", "onClick: Permissions was not granted, request...");
                         requestPermission();
@@ -73,7 +64,7 @@ public class BarcodeActivity extends AppCompatActivity {
             pngBtn.setOnClickListener( v -> {
                 if (isExternalStorageDisabled() || isExternalStorageReadOnly()) {
                     canWriteFile = false;
-                    Log.w("test", String.valueOf(canWriteFile));
+                    Log.w("test", String.valueOf(false));
                 }
                 if (canWriteFile){
                     if (checkPermission()) {
@@ -136,7 +127,7 @@ public class BarcodeActivity extends AppCompatActivity {
         }
     }
 
-    private ActivityResultLauncher<Intent> storageActivityResultLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<Intent> storageActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 Log.d("test", "onActivityResult: ");
