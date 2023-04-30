@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,8 +18,10 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.Xml;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.remiverchere.barcodeviewerandroid.barcodeUtils.BarcodeFileSaving;
 import com.remiverchere.barcodeviewerandroid.barcodeUtils.BarcodeFormatter;
 import com.remiverchere.barcodeviewerandroid.checkEan.EanEnum;
 
@@ -48,20 +51,46 @@ public class BarcodeActivity extends AppCompatActivity {
             this.eantype = (EanEnum)extras.get("eanType");
             myBarcodeView.modifyEanToRender(this.possibleEan, this.eantype );
 
-
-            if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
-                canWriteFile = false;
-                Log.w("test", String.valueOf(canWriteFile));
-            }
-            if (canWriteFile){
-                if (checkPermission()) {
-                    Log.d("test", "onClick: Permissions already granted...");
-                    writeSvgFile();
-                } else {
-                    Log.d("test", "onClick: Permissions was not granted, request...");
-                    requestPermission();
+            Button svgBtn = findViewById(R.id.saveSvg);
+            svgBtn.setOnClickListener( v -> {
+                if (isExternalStorageDisabled() || isExternalStorageReadOnly()) {
+                    canWriteFile = false;
+                    Log.w("test", String.valueOf(canWriteFile));
                 }
-            }
+                if (canWriteFile){
+                    if (checkPermission()) {
+                        Log.d("test", "onClick: Permissions already granted...");
+                        BarcodeFileSaving myFileSaving = new BarcodeFileSaving();
+                        myFileSaving.saveAsSvgFile(this.eantype, this.possibleEan);
+                    } else {
+                        Log.d("test", "onClick: Permissions was not granted, request...");
+                        requestPermission();
+                    }
+                }
+            });
+
+            Button pngBtn = findViewById(R.id.savePng);
+            pngBtn.setOnClickListener( v -> {
+                if (isExternalStorageDisabled() || isExternalStorageReadOnly()) {
+                    canWriteFile = false;
+                    Log.w("test", String.valueOf(canWriteFile));
+                }
+                if (canWriteFile){
+                    if (checkPermission()) {
+                        Log.d("test", "onClick: Permissions already granted...");
+                        BarcodeFileSaving myFileSaving = new BarcodeFileSaving();
+                        myFileSaving.saveAsPngFile(myBarcodeView);
+                    } else {
+                        Log.d("test", "onClick: Permissions was not granted, request...");
+                        requestPermission();
+                    }
+                }
+            });
+
+
+
+
+
         }
 
     }
@@ -71,67 +100,12 @@ public class BarcodeActivity extends AppCompatActivity {
         return Environment.MEDIA_MOUNTED_READ_ONLY.equals(extStorageState);
     }
 
-    private static boolean isExternalStorageAvailable() {
+    private static boolean isExternalStorageDisabled() {
         String extStorageState = Environment.getExternalStorageState();
-        return Environment.MEDIA_MOUNTED.equals(extStorageState);
+        return !Environment.MEDIA_MOUNTED.equals(extStorageState);
     }
 
-    private void writeSvgFile() {
-        BarcodeFormatter myFormater = new BarcodeFormatter(this.eantype);
-        String dataToRender = myFormater.getBarcodeValue(this.possibleEan);
-        if (dataToRender != null){
-            try {
-                File xmlFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),"barcode.xml");
-                if (xmlFile.exists()){
-                    boolean isDeleted = xmlFile.delete();
-                }
-                FileOutputStream fos = new FileOutputStream(xmlFile);
-                XmlSerializer xmlSerializer = Xml.newSerializer();
-                StringWriter writer = new StringWriter();
-                xmlSerializer.setOutput(writer);
-                xmlSerializer.startDocument("UTF-8",true);
-                xmlSerializer.startTag(null,"svg");
-                xmlSerializer.attribute(null, "xmlns","http://www.w3.org/2000/svg");
-                xmlSerializer.attribute(null, "version","1.1");
-                xmlSerializer.attribute(null, "baseProfile","full");
-                xmlSerializer.attribute(null, "width","700");
-                xmlSerializer.attribute(null, "height","200");
 
-                xmlSerializer.startTag(null,"g");
-                xmlSerializer.attribute(null, "stroke","black");
-                int index = 10;
-                for (int i = 0; i < dataToRender.length(); i++) {
-                    if (dataToRender.charAt(i) == '1'){
-                        xmlSerializer.startTag(null,"line");
-                        xmlSerializer.attribute(null, "stroke-width","4");
-                        xmlSerializer.attribute(null, "y1","10");
-                        xmlSerializer.attribute(null, "x1",String.valueOf((index)));
-                        xmlSerializer.attribute(null, "y2","50");
-                        xmlSerializer.attribute(null, "x2",String.valueOf((index)));
-
-                        xmlSerializer.endTag(null,"line");
-                    }
-
-                    index = index + 4;
-                }
-
-
-
-                xmlSerializer.endTag(null,"g");
-                xmlSerializer.endTag(null,"svg");
-
-                xmlSerializer.endDocument();
-                xmlSerializer.flush();
-
-                String dataWrite = writer.toString();
-                fos.write(dataWrite.getBytes());
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
 
     private void requestPermission(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
@@ -172,7 +146,7 @@ public class BarcodeActivity extends AppCompatActivity {
                     if (Environment.isExternalStorageManager()){
                         //Manage External Storage Permission is granted
                         Log.d("test", "onActivityResult: Manage External Storage Permission is granted");
-                        writeSvgFile();
+                        Toast.makeText(BarcodeActivity.this, "Manage External Storage Permission is granted", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         //Manage External Storage Permission is denied
@@ -211,7 +185,7 @@ public class BarcodeActivity extends AppCompatActivity {
                 if (write && read){
                     //External Storage permissions granted
                     Log.d("test", "onRequestPermissionsResult: External Storage permissions granted");
-                    writeSvgFile();
+                    Toast.makeText(BarcodeActivity.this, "Manage External Storage Permission is granted", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     //External Storage permission denied

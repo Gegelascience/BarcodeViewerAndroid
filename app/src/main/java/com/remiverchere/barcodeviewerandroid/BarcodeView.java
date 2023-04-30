@@ -29,6 +29,7 @@ public class BarcodeView extends View {
     public BarcodeView(Context context, @Nullable AttributeSet attrs) {
         super(context,attrs);
         this.myPaint = new Paint();
+        this.setDrawingCacheEnabled(true);
     }
 
     @Override
@@ -92,6 +93,8 @@ public class BarcodeView extends View {
                     }
 
                 }
+                this.buildDrawingCache();
+
             }
         }
 
