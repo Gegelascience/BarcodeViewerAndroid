@@ -37,7 +37,7 @@ public class EanValidator {
 
     }
 
-    private String calculateCheckDigit(@NonNull String eanDigitCheckLess) throws Exception {
+    public String calculateCheckDigit(@NonNull String eanDigitCheckLess) throws Exception {
         /*
         Calcul du check digit de l'ean
         */
